@@ -9,8 +9,17 @@ export const RequireAuth = async () => {
 
     if (!session) {
         redirect("/login"); 
-    } else{
-        redirect("/dashboard");
+    }
+    }
+
+    export const RequireUnAuth = async () => {
+    const session = await auth.api.getSession({
+        headers: await headers(),
+    });
+
+    if (session) {
+        
+        redirect("/dashboard"); 
     }
     }
 

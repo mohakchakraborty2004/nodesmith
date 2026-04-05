@@ -8,9 +8,9 @@ export default function Client() {
     const {data : users} = useSuspenseQuery(trpc.getUsers.queryOptions());
     return (
         <div>
-            {users.map((user) => (
-                <div key={user.id}>{user.name} {user.email}</div>
-            ))}
+            {users && (
+                <div key={users.id}>{users.name} {users.email}</div>
+            )}
         </div>
     );
 }
