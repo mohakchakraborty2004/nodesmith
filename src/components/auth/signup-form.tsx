@@ -24,28 +24,29 @@ import {
 } from "@/components/ui/form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { authClient } from "@/lib/client-auth";
-import { GitGraph, Mail } from "lucide-react"
+import { GitGraph, Mail } from "lucide-react";
 
-
-const LoginFormSchema = z.object({
+const signupFormSchema = z.object({
     email: z.email("Please enter a valid email address"),
     password: z.string().min(6, "Password must be at least 6 characters long"),
 })
 
-type LoginFormValues = z.infer<typeof LoginFormSchema>;
+type signupFormValues = z.infer<typeof signupFormSchema>;
 
-export default function LoginForm() {
+export default function SignupForm() {
+    
     const router = useRouter();
-    const form = useForm<LoginFormValues>({
-        resolver : zodResolver(LoginFormSchema),
+    const form = useForm<signupFormValues>({
+        resolver : zodResolver(signupFormSchema),
         defaultValues : {
             email: "",
             password: "",
         }
     })
 
-    const onSubmit = async (values: LoginFormValues) => {{
-         await authClient.signIn.email({
+    const onSubmit = async (values: signupFormValues) => {{
+        await authClient.signUp.email({
+            name : values.email,
             password : values.password,
             email : values.email,
             callbackURL : "/"
@@ -62,15 +63,15 @@ export default function LoginForm() {
     const isPending = form.formState.isSubmitting;
     
     return (    
-        <div className="min-h-screen flex items-center justify-center bg-muted/40 px-4">
+<div className="min-h-screen flex items-center justify-center bg-muted/40 px-4">
             <Card className="w-full max-w-md shadow-xl">
                 
                 <CardHeader className="space-y-1 text-center">
                     <CardTitle className="text-2xl font-semibold">
-                        Welcome Back
+                        Welcome to Nodesmith
                     </CardTitle>
                     <CardDescription>
-                        Enter your credentials to login to your account
+                        Start by creating your smith-Account
                     </CardDescription>
                 </CardHeader>
 
@@ -121,7 +122,7 @@ export default function LoginForm() {
                                 className="w-full"
                                 disabled={isPending}
                             >
-                                {isPending ? "Logging in..." : "Login"}
+                                {isPending ? "Creating account..." : "Sign Up"}
                             </Button>
                         </form>
                     </Form>
