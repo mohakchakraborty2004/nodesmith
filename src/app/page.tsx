@@ -1,17 +1,21 @@
-import { caller } from "@/trpc/server";
-import { de } from "zod/v4/locales";
+import { trpc } from "@/trpc/server";
+import { getQueryClient } from "@/trpc/server";
+import Client from "./client";
+import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
+import { Suspense } from "react";
 
 const Home = async() => {
-  const users = await caller.getUsers();
+  const queryClient = getQueryClient();
+
+  const query = queryClient.prefetchQuery(trpc.getUsers.queryOptions());
 
   return (
     <div>
-      {users.map((user) => (
-        <div key={user.id}>
-          <h2>{user.name}</h2>
-          <p>{user.email}</p>
-        </div>
-      ))}
+      <HydrationBoundary state={dehydrate(queryClient)}>
+        <Suspense fallback={<div>Loading...</div>}>
+          <Client />
+        </Suspense>
+      </HydrationBoundary>
     </div>
   );
 }
