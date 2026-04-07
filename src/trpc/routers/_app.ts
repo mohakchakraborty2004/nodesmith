@@ -23,6 +23,17 @@ export const appRouter = createTRPCRouter({
         data: { id: "task_001" },
       });
         return { "success" : true }
+  }) ,
+
+  testAi : protectedProcedure.mutation(async({ctx}) => {
+   const res =  await inngest.send({
+      name: "myapp/aievent",
+    })
+
+    return {
+     success : true,
+     text : res
+  }
   })
 });
  
