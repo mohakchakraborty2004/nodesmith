@@ -18,10 +18,17 @@ const Dashboard = () => {
        toast("Workflow queued successfully")
     }
  }))
+
+ const ai = useMutation(trpc.testAi.mutationOptions({
+    onSuccess : () => {
+       toast("AI function queued successfully")
+    }
+ }))
     return (
         <div>
             {JSON.stringify(data?.user)}
             {JSON.stringify(workflows.data)}
+           
             {data && (
                 <div>
 
@@ -40,7 +47,18 @@ const Dashboard = () => {
                 </div>
                 
                 )
+                
 }
+ <div>
+                <Button disabled={ai.isPending} onClick={() => {
+                    ai.mutate()
+                }}>
+                    Test AI Function
+                </Button>
+                <div>
+                    {ai && <p>{JSON.stringify(ai)}</p>}
+                </div>
+            </div>
         </div>
 
     )
