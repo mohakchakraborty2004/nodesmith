@@ -1,6 +1,7 @@
 import { inngest } from '@/inngest/client';
 import { baseProcedure, createTRPCRouter, paidProcedure, protectedProcedure } from '../init';
 import prisma from '@/lib/db';
+import { workflowRouter } from '@/server/router';
 
 export const appRouter = createTRPCRouter({
   getUsers: protectedProcedure.query(({ctx}) => {
@@ -34,7 +35,11 @@ export const appRouter = createTRPCRouter({
      success : true,
      text : res
   }
-  })
+  }),
+
+  // actual routes => 
+
+  workflow : workflowRouter
 });
  
 // export type definition of API

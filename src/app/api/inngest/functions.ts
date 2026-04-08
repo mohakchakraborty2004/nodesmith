@@ -30,15 +30,15 @@ export const myFunction = inngest.createFunction(
       return { processed: true, id: event.data.id };
     });
 
-    await step.sleep("pause", "6s");
+    // await step.sleep("pause", "6s");
 
-    await step.run("create-workflow", async () => {
-       await prisma.workflow.create({
-          data: {
-            name: "New Workflow",
-          }
-        });
-    })
+    // await step.run("create-workflow", async () => {
+    //    await prisma.workflow.create({
+    //       data: {
+    //         name: "New Workflow",
+    //       }
+    //     });
+    // })
 
     return { message: `Task ${event.data.id} complete`, result };
   }
