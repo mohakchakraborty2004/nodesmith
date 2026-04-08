@@ -1,4 +1,6 @@
 import { auth } from '@/lib/auth';
+import polarClient from '@/lib/polar';
+
 import { initTRPC, TRPCError } from '@trpc/server';
 import next from 'next';
 import { headers } from 'next/headers';
@@ -37,3 +39,19 @@ export const protectedProcedure = baseProcedure.use(async({ctx, next}) => {
 
     return next({ctx: {...ctx, auth: session}})
 })
+
+export const paidProcedure = protectedProcedure.use(
+  async({ctx, next}) => {
+    const activeSubscription = await polarClient.customers.getStateExternal({
+      externalId : ctx.auth.user.id
+    })
+
+    if (
+      !activeSubscription.activeSubscriptions || activeSubscription.activeSubscriptions.length === 0
+    ) {
+       throw new TRPCError({ code: 'FORBIDDEN', message: 'You must be subscribed to nodesmith pro to access this resource' });
+    }
+
+    return next({ctx : {...ctx, activeSubscription}})
+  }
+)
