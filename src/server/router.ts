@@ -57,9 +57,6 @@ export const workflowRouter = createTRPCRouter({
     }),
 
     getWorkflows : protectedProcedure
-    .input(z.object({
-       search : z.string().optional()
-    }))
     .query(async({ctx})=> {
         const data = await prisma.workflow.findMany({
             where : {

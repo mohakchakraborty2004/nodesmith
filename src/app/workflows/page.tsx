@@ -1,4 +1,6 @@
 import WorkflowPage from "@/components/workflow/page";
+import { HydrateClient } from "@/hooks/hydration";
+import { usePrefetch } from "@/hooks/suspense";
 import { RequireAuth } from "@/lib/auth-utils";
 import { getQueryClient, trpc } from "@/trpc/server";
 import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
@@ -6,17 +8,13 @@ import { inferInput } from "@trpc/tanstack-react-query";
 import { Suspense } from "react";
 
 
-type input = inferInput<typeof trpc.workflow.getWorkflows> 
-
-const Workflow = async ( params : input ) => {
-     const queryClient = getQueryClient()
-     await RequireAuth()
-     const { search } = await params
-     const query = queryClient.prefetchQuery(trpc.workflow.getWorkflows.queryOptions({ search }))
+const Workflow = async (  ) => {
+    await RequireAuth();
+    usePrefetch();
 
     return (
         <div>
-            <HydrationBoundary state={dehydrate(queryClient)}>
+           <HydrateClient>
                 <Suspense fallback= {
                     <div>
                         loadingg...
@@ -24,7 +22,7 @@ const Workflow = async ( params : input ) => {
                 }>
                 <WorkflowPage></WorkflowPage>
                 </Suspense>
-            </HydrationBoundary>
+            </HydrateClient>
         </div>
     )
 }
