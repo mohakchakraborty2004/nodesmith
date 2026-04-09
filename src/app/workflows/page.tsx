@@ -1,16 +1,24 @@
 import WorkflowPage from "@/components/workflow/page";
 import { HydrateClient } from "@/hooks/hydration";
-import { usePrefetch } from "@/hooks/suspense";
+import { workflowLoader } from "@/hooks/params/param-loader";
+import { usePrefetch , input} from "@/hooks/suspense";
 import { RequireAuth } from "@/lib/auth-utils";
 import { getQueryClient, trpc } from "@/trpc/server";
 import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
 import { inferInput } from "@trpc/tanstack-react-query";
+import { SearchParams } from "nuqs/server";
 import { Suspense } from "react";
 
+type props = {
+    searchParams : Promise<SearchParams>
+}
 
-const Workflow = async (  ) => {
+
+const Workflow = async ( { searchParams } : props) => {
     await RequireAuth();
-    usePrefetch();
+
+    const params = await workflowLoader(searchParams)
+    usePrefetch(params);
 
     return (
         <div>

@@ -1,3 +1,4 @@
+import { pagination } from "@/lib/constants";
 import prisma from "@/lib/db";
 import { createTRPCRouter, protectedProcedure } from "@/trpc/init";
 import { Search } from "lucide-react";
@@ -57,16 +58,56 @@ export const workflowRouter = createTRPCRouter({
     }),
 
     getWorkflows : protectedProcedure
-    .query(async({ctx})=> {
+    .input(z.object({
+        page : z.number().default(pagination.DEFAULT_PAGE),
+        pageSize : z
+        .number()
+        .min(pagination.MIN_PAGE_SIZE)
+        .max(pagination.MAX_PAGE_SIZE)
+        .default(pagination.DEFAULT_PAGE_SIZE),
+        search : z.string().default("")
+    }))
+    .query(async({ctx, input})=> {
+
         const data = await prisma.workflow.findMany({
+            skip : (input.page - 1) * input.pageSize,
+            take : input.pageSize,
+            where : {
+                userId : ctx.auth.user.id, 
+                name : {
+                    contains : input.search,
+                    mode : "insensitive"
+                }
+            }, 
+            orderBy : {
+                createdAt : "desc"
+            }
+        })
+
+        if(!data) {
+            return {
+                success : false
+            }
+        }
+
+        const totalCount = await prisma.workflow.count({
             where : {
                 userId : ctx.auth.user.id
             }
         })
 
+        const totalPages = Math.ceil(totalCount / input.pageSize)
+        const hasNextPage = input.page < totalPages
+        const hasPrevPage = input.page > 1
+
+
         return {
             success : true, 
-            data : data || []
+            data : data || [],
+            totalPages,
+            totalCount, 
+            hasNextPage,
+            hasPrevPage
         }
     })
 })
