@@ -4,16 +4,15 @@
 import { useCreateWorkflow, useSuspenseWorkflow } from "@/hooks/client-suspense";
 import useSearch from "@/hooks/params/use-debounce-search";
 import { useWorkflowParams } from "@/hooks/params/use-workflow-params";
-import { Button } from "@base-ui/react";
 import { useState } from "react";
 import { Input } from "../ui/input";
+import { Pagination } from "../pagination";
+import { Button } from "../ui/button";
 
 
 
 export default function WorkflowPage() {
-    // const trpc = useTRPC();
-    // const { data : workflows } = useSuspenseQuery(trpc.workflow.getWorkflows.queryOptions())
-    const {data : workflows} = useSuspenseWorkflow();
+    const  workflows  = useSuspenseWorkflow();
     const createWorkflow = useCreateWorkflow();
     const [params , setParams] = useWorkflowParams()
     const {searchValue , onSearchChange} = useSearch({
@@ -34,6 +33,17 @@ export default function WorkflowPage() {
              JSON.stringify(workflows)
              
             }
+
+            <div>
+                {workflows.data.totalPages > 0 && (
+                    <Pagination 
+                        page={params.page} 
+                        totalPages={workflows.data.totalPages}
+                        isDisabled={workflows.isFetching}
+                        onPageChange={(page) => setParams({ ...params, page })}
+                    />
+                )}
+            </div>
           
         </div>
     )

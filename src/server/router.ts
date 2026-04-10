@@ -86,14 +86,23 @@ export const workflowRouter = createTRPCRouter({
 
         if(!data) {
             return {
-                success : false
+                success : false,
+                data : [],
+                totalPages : 0,
+                totalCount : 0,
+                hasNextPage : false,
+                hasPrevPage : false
             }
         }
 
         const totalCount = await prisma.workflow.count({
             where : {
-                userId : ctx.auth.user.id
-            }
+                userId : ctx.auth.user.id, 
+                name : {
+                    contains : input.search,
+                    mode : "insensitive"
+                }
+            }, 
         })
 
         const totalPages = Math.ceil(totalCount / input.pageSize)
@@ -103,7 +112,7 @@ export const workflowRouter = createTRPCRouter({
 
         return {
             success : true, 
-            data : data || [],
+            data,
             totalPages,
             totalCount, 
             hasNextPage,
