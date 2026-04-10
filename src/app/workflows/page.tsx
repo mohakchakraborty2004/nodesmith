@@ -1,3 +1,4 @@
+import { AnimatedLoader } from "@/components/loader";
 import WorkflowPage from "@/components/workflow/page";
 import { HydrateClient } from "@/hooks/hydration";
 import { workflowLoader } from "@/hooks/params/param-loader";
@@ -24,9 +25,12 @@ const Workflow = async ( { searchParams } : props) => {
         <div>
            <HydrateClient>
                 <Suspense fallback= {
-                    <div>
-                        loadingg...
-                    </div>
+                   <div className="min-h-screen flex flex-col items-center justify-center bg-surface">
+            <AnimatedLoader size={50} strokeWidth={10} />
+            <p className="mt-6 text-sm font-label uppercase tracking-widest text-on-surface-variant animate-pulse">
+                Noding...
+            </p>
+        </div>
                 }>
                 <WorkflowPage></WorkflowPage>
                 </Suspense>
