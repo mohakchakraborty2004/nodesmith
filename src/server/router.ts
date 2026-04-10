@@ -9,7 +9,7 @@ export const workflowRouter = createTRPCRouter({
     createWorkflow : protectedProcedure.mutation(async ({ctx}) => {
         await prisma.workflow.create({
             data : {
-                name : "lorem",
+                name : "lorem-ipsum",
                 userId : ctx.auth.user.id
             }
         })
