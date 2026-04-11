@@ -1,3 +1,4 @@
+import { NodeType } from "@/generated/prisma/enums";
 import { pagination } from "@/lib/constants";
 import prisma from "@/lib/db";
 import { createTRPCRouter, protectedProcedure } from "@/trpc/init";
@@ -10,7 +11,14 @@ export const workflowRouter = createTRPCRouter({
         await prisma.workflow.create({
             data : {
                 name : "lorem-ipsum",
-                userId : ctx.auth.user.id
+                userId : ctx.auth.user.id,
+                nodes : {
+                    create : {
+                        type : NodeType.INITIAL,
+                        position : {x : 0 , y : 0},
+                        name : NodeType.INITIAL
+                    }
+                }
             }
         })
 
@@ -126,25 +134,15 @@ export const workflowRouter = createTRPCRouter({
         id : z.string()
     }))
     .query(async({ctx, input}) => {
-        const data = await prisma.workflow.findUnique({
+        const data = await prisma.workflow.findUniqueOrThrow({
             where : {
                 id : input.id,
                 userId : ctx.auth.user.id
+            },
+            include : {
+                nodes : true
             }
         })
-
-        if(!data) {
-            return {
-                data : {
-                    id: "",
-                    createdAt: "",
-                    updatedAt: "",
-                    name: "",
-                    userId: ""  
-                },
-                msg : "No data Found"
-            }
-        } 
 
         return {
             data ,

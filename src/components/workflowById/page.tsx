@@ -4,6 +4,7 @@ import { useSuspenseWorkflowForId, useUpdateWorkflow } from "@/hooks/client-susp
 import { Input } from "@base-ui/react";
 import { useState } from "react";
 import { Button } from "../ui/button";
+import Editor from "./editor-canvas/editor";
 
 export default function GetWorkflowByIdPage( {workflowId} : {workflowId : string} ) {
     const [name , setName] = useState<string>("")
@@ -27,6 +28,7 @@ export default function GetWorkflowByIdPage( {workflowId} : {workflowId : string
             }}>
                 { updateWorkflow.isPending ? "Updating" : "Update name"}
             </Button>
+            <Editor workflowId={workflowId}></Editor>
         </div>
     )
 }
