@@ -2,6 +2,7 @@ import { NodeType } from "@/generated/prisma/enums";
 import { pagination } from "@/lib/constants";
 import prisma from "@/lib/db";
 import { createTRPCRouter, protectedProcedure } from "@/trpc/init";
+import { Edge, Node } from "@xyflow/react";
 import { Search } from "lucide-react";
 import z from "zod";
 
@@ -140,12 +141,30 @@ export const workflowRouter = createTRPCRouter({
                 userId : ctx.auth.user.id
             },
             include : {
-                nodes : true
+                nodes : true,
+                connections : true
             }
         })
 
+        const nodes : Node[] = data.nodes.map((node) => ({
+            id : node.id,
+            position : node.position as {x : number, y: number},
+            type : node.type,
+            data : (node.data as Record<string, unknown>) || {} 
+        }))
+
+        const connections : Edge[] = data.connections.map((connec) => ({
+            id : connec.id,
+            source : connec.fromNodeId,
+            target : connec.toNodeId,
+            sourceHandle : connec.fromOutput,
+            targetHandle : connec.toInput
+        }))
+
         return {
-            data ,
+            data,
+            nodes,
+            connections,
             msg : "Data found"
         }
     })
