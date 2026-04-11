@@ -118,5 +118,36 @@ export const workflowRouter = createTRPCRouter({
             hasNextPage,
             hasPrevPage
         }
+    }),
+
+    getWorkflowById : protectedProcedure
+    .input(z.object({
+        id : z.string()
+    }))
+    .query(async({ctx, input}) => {
+        const data = await prisma.workflow.findUnique({
+            where : {
+                id : input.id,
+                userId : ctx.auth.user.id
+            }
+        })
+
+        if(!data) {
+            return {
+                data : {
+                    id: "",
+                    createdAt: "",
+                    updatedAt: "",
+                    name: "",
+                    userId: ""  
+                },
+                msg : "No data Found"
+            }
+        } 
+
+        return {
+            data ,
+            msg : "Data found"
+        }
     })
 })
