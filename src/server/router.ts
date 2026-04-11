@@ -40,7 +40,7 @@ export const workflowRouter = createTRPCRouter({
         id : z.string(), 
         name : z.string().min(3)
     })).mutation(async({ctx, input}) => {
-        await prisma.workflow.update({
+      const data =  await prisma.workflow.update({
             where : {
                 id : input.id,
                 userId : ctx.auth.user.id
@@ -52,7 +52,8 @@ export const workflowRouter = createTRPCRouter({
 
          return {
             success : true, 
-            message : "workflow name updated"
+            message : "workflow name updated",
+            data 
         }
 
     }),

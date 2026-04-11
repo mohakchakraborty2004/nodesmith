@@ -33,6 +33,19 @@ export const useCreateWorkflow = () => {
     }))
 }
 
+export const useUpdateWorkflow = () => {
+    const queryClient = useQueryClient();
+    const trpc = useTRPC();
+
+    return useMutation(trpc.workflow.updateWorkflow.mutationOptions({
+        onSuccess : (data) => {
+            toast.success(`${data.message}`)
+            queryClient.invalidateQueries(trpc.workflow.getWorkflowById.queryOptions({id : data.data.id}))
+            queryClient.invalidateQueries(trpc.workflow.getWorkflows.queryOptions({}));
+        }
+    }))
+}
+
 export const useDeleteWorkflow = () => { 
     const queryClient = useQueryClient();
     const trpc = useTRPC();
