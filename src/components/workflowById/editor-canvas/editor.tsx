@@ -1,10 +1,11 @@
 "use client"
 
 import { useState, useCallback } from 'react';
-import { ReactFlow, applyNodeChanges, applyEdgeChanges, addEdge, Background, ControlButton, Controls, MiniMap, Node, Edge } from '@xyflow/react';
+import { ReactFlow, applyNodeChanges, applyEdgeChanges, addEdge, Background, ControlButton, Controls, MiniMap, Node, Edge, Panel, Position } from '@xyflow/react';
 import '@xyflow/react/dist/style.css';
 import { useSuspenseWorkflowForId } from '@/hooks/client-suspense';
 import { nodeComponents } from '@/lib/nodeconstants';
+import { AddButton } from './add-node-button';
  
 // const initialNodes = [
 //   { id: 'n1', position: { x: 0, y: 0 }, data: { label: 'Node 1' } },
@@ -31,7 +32,7 @@ export default function Editor({workflowId} : {workflowId : string}) {
   );
  
   return (
-    <div style={{ width: '100vw', height: '90vh' }}>
+    <div style={{ width: '100vw', height: '90vh' ,padding : "10px" }}>
       <ReactFlow
         nodes={nodes}
         edges={edges}
@@ -44,6 +45,9 @@ export default function Editor({workflowId} : {workflowId : string}) {
         <Background />
         <Controls></Controls>
         <MiniMap></MiniMap>
+        <Panel position="top-right">
+            <AddButton></AddButton>
+        </Panel>
       </ReactFlow>
       
 

@@ -2,8 +2,6 @@
 
 import React, { useCallback, type ReactNode } from "react";
 import {
-  useReactFlow,
-  useNodeId,
   Handle,
   Position,
   type NodeProps,
