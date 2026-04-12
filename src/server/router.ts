@@ -3,8 +3,9 @@ import { pagination } from "@/lib/constants";
 import prisma from "@/lib/db";
 import { createTRPCRouter, protectedProcedure } from "@/trpc/init";
 import { Edge, Node } from "@xyflow/react";
+import { id } from "date-fns/locale";
 import { Search } from "lucide-react";
-import z from "zod";
+import z, { number } from "zod";
 
 
 export const workflowRouter = createTRPCRouter({
@@ -167,5 +168,74 @@ export const workflowRouter = createTRPCRouter({
             connections,
             msg : "Data found"
         }
-    })
+    }),
+
+        updateWorkflowNodes : protectedProcedure.input(z.object({
+        id : z.string(), 
+        node : z.array(z.object({
+            id : z.string(),
+            position : z.object({
+                x: z.number(),
+                y: z.number()
+            }),
+        type : z.string().nullish(),
+        data : z.record(z.string(), z.any()).optional() 
+        })
+    ),
+        edge : z.array(z.object({
+            id : z.string(),
+            source : z.string(),
+            target : z.string(),
+            sourceHandle : z.string().nullish(),
+            targetHandle : z.string().nullish()
+        }))
+    })).mutation(async({ctx, input}) => {
+
+        const {id , node , edge} = input
+
+      const workflow =  await prisma.workflow.findUniqueOrThrow({
+            where : {
+                id : input.id,
+                userId : ctx.auth.user.id
+            }
+        })
+
+    return await prisma.$transaction(async (tx) => {
+
+
+        await tx.node.deleteMany({
+            where : {
+                id : id
+            }
+        });
+
+
+        await tx.node.createMany({
+            data : node.map((node) => ({
+                id : node.id,
+                workflowId : input.id,
+                name : node.type || "unknown",
+                type : node.type as NodeType,
+                position : node.position,
+                data : node.data || {},       
+            }))
+        });
+        await tx.connections.createMany({
+            data : edge.map((edge) => ({
+               id : edge.id,
+               fromNodeId : edge.source,
+               toNodeId :  edge.target,
+               fromOutput : edge.sourceHandle || "main",
+               toInput : edge.targetHandle || "main",
+               workflowId : id
+            }))
+        })
+        return workflow
+      })
+
+    //   return {
+    //     message : "success",
+    //     id : id
+    //   }
+    }),
 })

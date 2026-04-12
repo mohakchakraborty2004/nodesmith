@@ -57,3 +57,19 @@ export const useDeleteWorkflow = () => {
         }
     }))
 }
+
+export const useUpdateWorkflowNode = () => {
+    const queryClient = useQueryClient();
+    const trpc = useTRPC()
+
+    return useMutation(trpc.workflow.updateWorkflowNodes.mutationOptions({
+        onSuccess : (data) => {
+            toast.success(`Workflow updated`)
+            queryClient.invalidateQueries(trpc.workflow.getWorkflowById.queryOptions({id : data.id}))
+            queryClient.invalidateQueries(trpc.workflow.getWorkflows.queryOptions({}));
+        },
+        onError : () => {
+            toast.error("Failed to update or save workflow")
+        }
+    }))
+}
