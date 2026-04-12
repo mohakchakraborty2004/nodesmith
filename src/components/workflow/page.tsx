@@ -1,14 +1,17 @@
 "use client";
 
-import { useCreateWorkflow, useSuspenseWorkflow } from "@/hooks/client-suspense";
+import { useCreateWorkflow, useDeleteWorkflow, useSuspenseWorkflow } from "@/hooks/client-suspense";
 import useSearch from "@/hooks/params/use-debounce-search";
 import { useWorkflowParams } from "@/hooks/params/use-workflow-params";
 import { Pagination } from "../pagination"; 
-import { WorkflowIcon , ArrowRightCircleIcon } from "lucide-react";
+import { WorkflowIcon , ArrowRightCircleIcon, DeleteIcon } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 export default function WorkflowPage() {
+    const router = useRouter();
     const workflows = useSuspenseWorkflow();
     const createWorkflow = useCreateWorkflow();
+    const deleteWorkflow = useDeleteWorkflow();
     const [params, setParams] = useWorkflowParams();
     const { searchValue, onSearchChange } = useSearch({
         params,
@@ -96,7 +99,19 @@ export default function WorkflowPage() {
                                     </div>
                                 </div>
                                 <div className="flex items-center gap-12">
-                                    <button className="material-symbols-outlined text-on-surface-variant hover:text-primary transition-colors">
+                                    <button 
+                                    onClick={() => {
+                                        deleteWorkflow.mutate({ id : workflow.id })
+                                    }}
+                                    disabled={deleteWorkflow.isPending}
+                                    className="material-symbols-outlined text-on-surface-variant hover:text-primary transition-colors hover:cursor-pointer">
+                                        <DeleteIcon></DeleteIcon>
+                                    </button>
+                                    <button 
+                                    onClick={() => {
+                                        router.push(`/workflow/${workflow.id}`)
+                                    }}
+                                    className="material-symbols-outlined text-on-surface-variant hover:text-primary transition-colors hover:cursor-pointer">
                                         <ArrowRightCircleIcon></ArrowRightCircleIcon>
                                     </button>
                                 </div>

@@ -4,6 +4,7 @@ import "./globals.css";
 import { TRPCReactProvider } from "@/trpc/client";
 import { Toaster } from "@/components/ui/sonner";
 import { NuqsAdapter } from 'nuqs/adapters/next/app'
+import { Provider } from "jotai";
 
 // Font for headlines and titles
 const epilogue = Epilogue({
@@ -43,7 +44,9 @@ export default function RootLayout({
       >
         <TRPCReactProvider>
           <NuqsAdapter>
+            <Provider>
             {children}
+            </Provider>
             <Toaster />
           </NuqsAdapter>
         </TRPCReactProvider>
