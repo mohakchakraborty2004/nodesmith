@@ -12,6 +12,7 @@ interface workflowNodeProps {
     onSettings? : () => void;
     name? : string;
     description? : string;
+    onDoubleClick? : () => void
 }
 
 
@@ -21,14 +22,15 @@ export function WorkflowNode({
     onDelete,
     onSettings,
     name,
-    description
+    description,
+    onDoubleClick
 }: workflowNodeProps) {
 
     return ( 
-        <>
+        < div onDoubleClick={onDoubleClick}>
             {showToolbar && (
                 <div>
-                    <NodeToolbar>
+                    <NodeToolbar >
                         <Button className="size-sm m-3" onClick={onSettings}>
                             <SettingsIcon className="size-4"></SettingsIcon>
                         </Button>
@@ -58,6 +60,6 @@ export function WorkflowNode({
                     </NodeToolbar>
                 </div>
             )}
-        </>
+        </div>
     )
 }

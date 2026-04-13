@@ -1,4 +1,4 @@
-import { NodeProps, Position } from "@xyflow/react";
+import { NodeProps, Position , useReactFlow} from "@xyflow/react";
 import React, { memo, useState } from "react";
 import { PlaceholderNode } from "./placeholder-node";
 import { GlobeIcon, Icon, type LucideIcon, PlusIcon } from "lucide-react";
@@ -6,6 +6,7 @@ import { WorkflowNode } from "./workflowNode";
 import { NodeSelector } from "./Nodeselector";
 import { BaseNode, BaseNodeContent } from "./base-node";
 import { BaseHandle } from "@/components/base-handle";
+import { NodeStatusIndicator } from "./NodeStatusIndicator";
 
 interface BaseTriggerNodeProps extends NodeProps{
     icon : LucideIcon
@@ -23,17 +24,33 @@ name,
 desciption,
 children,
 onSettings,
-onDoubleClick
+onDoubleClick,
+id
 }: BaseTriggerNodeProps) => {
+    const {setNodes , setEdges} = useReactFlow();
     const handleDelete = () => {
+        setNodes((currentNodes) => {
+            const updatedNodes = currentNodes.filter((node) => node.id !== id);
+            return updatedNodes
+        })
 
+        setEdges((currentEdges) => {
+            const updatedEdges = currentEdges.filter((edge)=> {
+                edge.source !== id && edge.target !== id
+            })
+            return updatedEdges
+        })
     }
     return (<>
+    <NodeStatusIndicator
+        status="loading"
+    >
         <WorkflowNode
          name={name}
          description={desciption}
          onSettings={onSettings}
          onDelete={handleDelete}
+         onDoubleClick={onDoubleClick}
         >
             <BaseNode>
                 <BaseNodeContent>
@@ -50,6 +67,7 @@ onDoubleClick
             </BaseNode>
 
         </WorkflowNode>
+        </NodeStatusIndicator>
     </>)
 })
 

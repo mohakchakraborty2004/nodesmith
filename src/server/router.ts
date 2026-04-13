@@ -2,10 +2,11 @@ import { NodeType } from "@/generated/prisma/enums";
 import { pagination } from "@/lib/constants";
 import prisma from "@/lib/db";
 import { createTRPCRouter, protectedProcedure } from "@/trpc/init";
+import { Input } from "@base-ui/react";
 import { Edge, Node } from "@xyflow/react";
 import { id } from "date-fns/locale";
 import { Search } from "lucide-react";
-import z, { number } from "zod";
+import z, { number, string } from "zod";
 
 
 export const workflowRouter = createTRPCRouter({
