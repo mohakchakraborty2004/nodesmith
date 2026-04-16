@@ -3,9 +3,11 @@ import { memo, useState } from "react";
 import { BaseTriggerNode } from "../../base-trigger-node";
 import { MousePointer2Icon } from "lucide-react";
 import ManualTriggerDialog from "./TriggerDialog";
+import { NodeStatus } from "../../base-trigger-node";
 
 export const ManualNode = memo((props : NodeProps) => {
     const [open , onOpenChange] = useState(false);
+    const [status , setStatus] = useState<NodeStatus>(NodeStatus.initial);
     return <>
         <ManualTriggerDialog open={open} onOpenChange={() => onOpenChange(!open)}></ManualTriggerDialog>
         <BaseTriggerNode 
@@ -19,6 +21,7 @@ export const ManualNode = memo((props : NodeProps) => {
             onOpenChange(true)
         }}
         icon={MousePointer2Icon}
+        status={status}
         >
         </BaseTriggerNode>
     </>

@@ -8,12 +8,19 @@ import { BaseNode, BaseNodeContent } from "./base-node";
 import { BaseHandle } from "@/components/base-handle";
 import { NodeStatusIndicator } from "./NodeStatusIndicator";
 
+export enum NodeStatus { 
+    error = "error",
+    initial = "initial",
+    loading = "loading",
+    success = "success"
+}
+
 interface BaseTriggerNodeProps extends NodeProps{
     icon : LucideIcon
     name : string
     desciption? : string
     children? : string
-    // status? : NodeStatus
+    status? : NodeStatus
     onSettings? : () => void;
     onDoubleClick : () => void;
 }
@@ -25,7 +32,8 @@ desciption,
 children,
 onSettings,
 onDoubleClick,
-id
+id,
+status
 }: BaseTriggerNodeProps) => {
     const {setNodes , setEdges} = useReactFlow();
     const handleDelete = () => {
@@ -43,7 +51,7 @@ id
     }
     return (<>
     <NodeStatusIndicator
-        status="loading"
+        status={status || NodeStatus.initial}
     >
         <WorkflowNode
          name={name}
