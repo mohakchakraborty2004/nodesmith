@@ -6,13 +6,15 @@ import { WorkflowNode } from "./workflowNode";
 import { NodeSelector } from "./Nodeselector";
 import { BaseNode, BaseNodeContent } from "./base-node";
 import { BaseHandle } from "@/components/base-handle";
+import { NodeStatus } from "./base-trigger-node";
+import { NodeStatusIndicator } from "./NodeStatusIndicator";
 
 interface BaseExecutionNodeProps extends NodeProps{
     icon : LucideIcon
     name : string
     desciption? : string
     children? : string
-    // status? : NodeStatus
+    status? : NodeStatus
     onSettings? : () => void;
     onDoubleClick : () => void;
 }
@@ -24,7 +26,8 @@ desciption,
 children,
 onSettings,
 onDoubleClick,
-id
+id, 
+status
 }: BaseExecutionNodeProps) => {
      const {setNodes , setEdges} = useReactFlow();
         const handleDelete = () => {
@@ -46,7 +49,9 @@ id
          description={desciption}
          onSettings={onSettings}
          onDelete={handleDelete}
+         onDoubleClick={onDoubleClick}
         >
+            <NodeStatusIndicator status={status}>
             <BaseNode>
                 <BaseNodeContent>
                   <Icon className="size-4"></Icon>
@@ -65,6 +70,7 @@ id
                 </BaseNodeContent>
 
             </BaseNode>
+            </NodeStatusIndicator>
 
         </WorkflowNode>
     </>)
