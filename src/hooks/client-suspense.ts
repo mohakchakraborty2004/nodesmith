@@ -73,3 +73,20 @@ export const useUpdateWorkflowNode = () => {
         }
     }))
 }
+
+export const useExecuteWorkflow = () => {
+    const queryClient = useQueryClient()
+    const trpc = useTRPC()
+
+    return useMutation(trpc.workflow.executeWorkflow.mutationOptions({
+        onSuccess : (data) => {
+            toast.success(`Workflow executed`)
+            queryClient.invalidateQueries(trpc.workflow.getWorkflowById.queryOptions({id : data.id}))
+            queryClient.invalidateQueries(trpc.workflow.getWorkflows.queryOptions({}));
+        },
+        onError : () => {
+            toast.error("Failed to execute workflow")
+        }
+    }))
+
+}

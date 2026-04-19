@@ -1,4 +1,5 @@
 import { NodeType } from "@/generated/prisma/enums";
+import { inngest } from "@/inngest/client";
 import { pagination } from "@/lib/constants";
 import prisma from "@/lib/db";
 import { createTRPCRouter, protectedProcedure } from "@/trpc/init";
@@ -238,10 +239,24 @@ export const workflowRouter = createTRPCRouter({
         })
         return workflow
       })
-
-    //   return {
-    //     message : "success",
-    //     id : id
-    //   }
     }),
+
+    executeWorkflow : protectedProcedure.input(z.object({
+        id : z.string()
+    })).mutation(async({ctx, input}) => {
+        const data = await prisma.workflow.findUniqueOrThrow({
+            where : {
+                id : input.id,
+                userId : ctx.auth.user.id
+            }
+        })
+        await inngest.send({
+            name : "myapp/execute-workflow",
+            data : { 
+                id : input.id
+            }
+    })
+
+        return data
+    })
 })
