@@ -67,9 +67,9 @@ export default function HttpDialog ({
     useEffect(() => {
         if(open) {
             form.reset({
-                endpoint : defaultEndpoint,
-                method : defaultMethod,
-                body : defaultBody
+                endpoint : defaultEndpoint ?? "",
+                method : defaultMethod ?? "GET",
+                body : defaultBody ?? ""
             })
         }
     }, [open, defaultEndpoint, defaultMethod, defaultBody])
@@ -77,9 +77,9 @@ export default function HttpDialog ({
     const form = useForm<z.infer<typeof schema>>({
         resolver : zodResolver(schema),
         defaultValues : {
-            endpoint : defaultEndpoint,
-            method : defaultMethod ,
-            body : defaultBody
+            endpoint : defaultEndpoint ?? "",
+            method : defaultMethod ?? "GET",
+            body : defaultBody ?? ""
         }
     })
 
