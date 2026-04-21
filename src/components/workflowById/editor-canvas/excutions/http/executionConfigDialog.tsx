@@ -33,9 +33,8 @@ import {
 import { useEffect } from "react";
 
 
-
-
 const schema = z.object({
+    variable : z.string().min(1, {message : "Variable name is required"}).regex(/^[a-zA-Z_$][a-zA-Z0-9_$]*$/, {message : "Invalid variable name. It should start with a letter, underscore, or dollar sign, and can only contain letters, numbers, underscores, or dollar signs."}),
     endpoint : z.string({message : "Endpoint is required"}).url({message : "Invalid URL"}),
       method : z.enum(["GET" , "POST" , "PUT" , "DELETE" , "PATCH"]),
         body : z.string().optional()
@@ -52,6 +51,7 @@ type Props = {
     defaultEndpoint ? : string;
     defaultMethod ? : "GET" | "POST" | "PUT" | "DELETE" | "PATCH";
     defaultBody ? : string;
+    defaultVariable ? : string;
 }
 
 
@@ -61,7 +61,8 @@ export default function HttpDialog ({
     onSubmit,
     defaultEndpoint,
     defaultMethod,
-    defaultBody
+    defaultBody,
+    defaultVariable
 }: Props ){
 
     useEffect(() => {
@@ -69,17 +70,19 @@ export default function HttpDialog ({
             form.reset({
                 endpoint : defaultEndpoint ?? "",
                 method : defaultMethod ?? "GET",
-                body : defaultBody ?? ""
+                body : defaultBody ?? "",
+                variable : defaultVariable ?? ""
             })
         }
-    }, [open, defaultEndpoint, defaultMethod, defaultBody])
+    }, [open, defaultEndpoint, defaultMethod, defaultBody, defaultVariable])
 
     const form = useForm<z.infer<typeof schema>>({
         resolver : zodResolver(schema),
         defaultValues : {
             endpoint : defaultEndpoint ?? "",
             method : defaultMethod ?? "GET",
-            body : defaultBody ?? ""
+            body : defaultBody ?? "",
+            variable : defaultVariable ?? ""
         }
     })
 
@@ -114,6 +117,20 @@ export default function HttpDialog ({
                                         <FormLabel>Endpoint</FormLabel>
                                         <FormControl>
                                             <Input placeholder="https://api.example.com/data/{{httpResponse.data.id}}" {...field}></Input>
+                                        </FormControl>
+                                        <FormMessage></FormMessage>
+                                    </FormItem>
+                                )}
+                            ></FormField>
+
+                            <FormField 
+                                control={form.control}
+                                name="variable"
+                                render={({field}) => (
+                                    <FormItem>
+                                        <FormLabel>Variable</FormLabel>
+                                        <FormControl>
+                                            <Input placeholder="{{httpResponse.data.id}}" {...field}></Input>
                                         </FormControl>
                                         <FormMessage></FormMessage>
                                     </FormItem>

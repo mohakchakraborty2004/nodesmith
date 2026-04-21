@@ -8,6 +8,7 @@ type HttpRequestNodeData = {
     endpoint? : string;
     method? : "GET" | "POST" | "PUT" | "PATCH" | "DELETE";
     body? : string;
+    variable : string;
     [key : string] : unknown;
 }
 
@@ -34,7 +35,8 @@ export const HttpNode = memo((props : NodeProps<httpRequestNodeProps>) => {
                             ...node.data,
                             endpoint : values.endpoint,
                             method : values.method,
-                            body : values.body
+                            body : values.body,
+                            variable: values.variable
                         }
                     }
                 }
@@ -46,16 +48,17 @@ export const HttpNode = memo((props : NodeProps<httpRequestNodeProps>) => {
 
     return (
         <>
-          <HttpDialog
-            open={open}
-            onOpenChange={() => setOpen(!open)}
-            defaultEndpoint={nodeData.endpoint}
-            defaultMethod={nodeData.method}
-            onSubmit={(values) => {
-                handleSubmit(values);
-            }}
-            >
-         </HttpDialog>
+                    <HttpDialog
+                        open={open}
+                        onOpenChange={() => setOpen(!open)}
+                        defaultEndpoint={nodeData.endpoint}
+                        defaultMethod={nodeData.method}
+                        defaultBody={nodeData.body}
+                        defaultVariable={nodeData.variable}
+                        onSubmit={(values) => {
+                                handleSubmit(values);
+                        }}
+                    />
 
           
             <BaseExecutionNode
