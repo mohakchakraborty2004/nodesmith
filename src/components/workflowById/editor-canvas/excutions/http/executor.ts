@@ -1,13 +1,20 @@
 import { NodeExecutor } from "@/lib/types-executor-Fns"
 import { NonRetriableError } from "inngest";
 import axios, { Method } from "axios"
+import Handlebars from "handlebars"
 
 type HTTPExecutionData = {
-    endpoint ?: string,
-    method ? : string | any
-    body ? : string
-    variable ? : string
+    endpoint : string,
+    method  : string | any
+    body ?: string
+    variable  : string
 }
+
+Handlebars.registerHelper("json", function(context) {
+    const stringify = JSON.stringify(context, null, 2);
+    const safeString = new Handlebars.SafeString(stringify);
+    return safeString;
+});
 
 export const httpTriggerExecutor : NodeExecutor<HTTPExecutionData> = async({
     nodeId,
@@ -30,43 +37,29 @@ export const httpTriggerExecutor : NodeExecutor<HTTPExecutionData> = async({
         const method : Method = data.method || "GET" 
         
         const response =  await axios.request({
-            url: data.endpoint,
+            url: Handlebars.compile(data.endpoint)(context),
             method,
-            data: (method === "PUT" || "POST" || "PATCH") ? data.body : {},
+            data: (method === "PUT" || "POST" || "PATCH") ? Handlebars.compile(data.body || "{}")(context)  : {},
             headers : (method === "PUT" || "POST" || "PATCH") ? {
                 "Content-Type" : "application/json"
             } : {}
         })
 
-        const contentType = response.headers["Content-Type"];
-        const isJson = typeof contentType === "string" && contentType.includes("application/json");
-        const responseData = isJson ? JSON.parse(response.data): JSON.stringify(response.data)
+        const responseData = response.data
         const responsePayload = {
              httpResponse : {
                 status : response.status,
                 statusText : response.statusText,
                 data : responseData,
-                contentType : response.headers["Content-Type"]
+                contentType : response.headers["content-type"]
             }
         }
 
-        if(data.variable) {
             return {
                 ...context,
                 [data.variable] : responsePayload
             }
-        }
         
-        //fallback
-        return {
-            ...context,
-            httpResponse : {
-                status : response.status,
-                statusText : response.statusText,
-                data : responseData,
-                contentType : response.headers["Content-Type"]
-            }
-        }
     }) 
 
     // add a completed success status here later 

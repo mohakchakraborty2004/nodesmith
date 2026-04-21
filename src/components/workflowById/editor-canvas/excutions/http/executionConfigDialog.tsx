@@ -81,7 +81,7 @@ export default function HttpDialog ({
         defaultValues : {
             endpoint : defaultEndpoint ?? "",
             method : defaultMethod ?? "GET",
-            body : defaultBody ?? "",
+            body : defaultBody ?? "{}",
             variable : defaultVariable ?? ""
         }
     })
@@ -172,10 +172,14 @@ export default function HttpDialog ({
                                             <FormControl>
                                                 <Textarea placeholder='{"key": "value"}' {...field}></Textarea>
                                             </FormControl>
+                                            <FormDescription>
+                                                Provide the request body in JSON format. You can use Handlebars syntax to include dynamic values from the execution context, such as {'${{json myApiName.httpResponse.data }}'}
+                                            </FormDescription>
                                             <FormMessage></FormMessage>
                                         </FormItem>
                                     )}
-                                ></FormField>
+                                />
+                 
                             )}
                     <DialogFooter>
                         <Button onClick={() => onOpenChange(false)} variant="outline" className="hover:cursor-pointer">Cancel</Button>
