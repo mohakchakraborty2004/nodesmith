@@ -17,7 +17,7 @@ const Workflow = async ( { searchParams } : props) => {
     await RequireAuth();
 
     const params = await workflowLoader(searchParams)
-    usePrefetch(params);
+    await usePrefetch(params);
 
     return (
         <div>
