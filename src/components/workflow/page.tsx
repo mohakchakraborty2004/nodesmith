@@ -7,7 +7,7 @@ import { Pagination } from "../pagination";
 import { WorkflowIcon , ArrowRightCircleIcon, DeleteIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
 
-export default function WorkflowPage() {
+export function WorkflowPage() {
     const router = useRouter();
     const workflows = useSuspenseWorkflow();
     const createWorkflow = useCreateWorkflow();
