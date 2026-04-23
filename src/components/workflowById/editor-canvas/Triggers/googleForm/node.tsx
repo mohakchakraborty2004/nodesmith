@@ -1,30 +1,30 @@
 import { NodeProps } from "@xyflow/react";
 import { memo, useState } from "react";
 import { BaseTriggerNode } from "../../base-trigger-node";
-import { MousePointer2Icon } from "lucide-react";
-import ManualTriggerDialog from "./TriggerDialog";
+import { FormIcon } from "lucide-react";
+import GoogleTriggerDialog from "./TriggerDIalog";
 import { NodeStatus } from "../../base-trigger-node";
 
-export const ManualNode = memo((props : NodeProps) => {
+export const GoogleNode = memo((props : NodeProps) => {
     const [open , onOpenChange] = useState(false);
     const [status , setStatus] = useState<NodeStatus>(NodeStatus.initial);
     return <>
-        <ManualTriggerDialog open={open} onOpenChange={() => onOpenChange(!open)}></ManualTriggerDialog>
+        <GoogleTriggerDialog open={open} onOpenChange={() => onOpenChange(!open)}></GoogleTriggerDialog>
         <BaseTriggerNode 
         {...props}
-        name="Click to trigger"
-        desciption="Clicking this node will trigger a workflow"
+        name="Google form trigger"
+        desciption="Whenever the google form is submitted, the workflow will be triggered"
         onSettings={() => {
             onOpenChange(true)
         }}
         onDoubleClick={() => {
             onOpenChange(true)
         }}
-        icon={MousePointer2Icon}
+        icon={FormIcon}
         status={status}
         >
         </BaseTriggerNode>
     </>
 })
 
-ManualNode.displayName = "ManualNode"
+GoogleNode.displayName = "GoogleNode"

@@ -1,46 +1,54 @@
+import { NodeType } from "@/generated/prisma/enums";
 import { inngest } from "@/inngest/client";
 import prisma from "@/lib/db";
-import { google } from '@ai-sdk/google';
-import { generateText } from 'ai';
+import { getExecutor } from "@/lib/executorFns";
+import { topologicalSort } from "@/lib/topology-sort-util";
+import { NonRetriableError } from "inngest";
 
 
-export const aiFunction = inngest.createFunction(
-    { id : "Ai function", triggers : { event : "myapp/aievent"} }, 
+export const ExecuteWorkflow = inngest.createFunction(
+    { id : "Execute-Workflow", triggers : { event : "myapp/execute-workflow"} }, 
     async ({event, step}) => {
-        const result = await step.run("call-ai", async()=> {
-            const { text } = await generateText({
-                model: google('gemini-2.5-flash'),
-                prompt: 'Write a vegetarian lasagna recipe for 4 people.',
-                });
+      const workflowId = event.data.id
 
-                return text
-            })
-        
-        
+      if(!workflowId) {
+        throw new NonRetriableError("Workflow ID is required");
+      }
 
-        return { message: "AI function complete", result }
+      const Sortworkflow = await step.run("Sort Workflow", async () => {    
+        const workflow = await prisma.workflow.findUniqueOrThrow({
+        where : {
+          id : workflowId
+        },
+        include : {
+          nodes : true,
+          connections : true
+        }
+      }) 
+
+      const sortedNodes = topologicalSort(workflow.nodes, workflow.connections);
+
+      return sortedNodes
+    }) 
+
+    //initializing context 
+    let context = event.data.initialData || {}
+    // for eg if we have google and stripe data , we use that data to run the workflows , no data for manual trigger
+
+    for (const node of Sortworkflow) {
+      const executor = getExecutor(node.type as NodeType)
+      context = await executor({
+        nodeId : node.id,
+        context,
+        step, 
+        data : node.data as Record<string, unknown>
+      })
+    }
+
+     return {
+        workflowId,
+        result : context
+     }
+ 
     }
 )
-
-
-export const myFunction = inngest.createFunction(
-  { id: "My Function", retries: 2, triggers : {event : "myapp/event"} },
-  async ({ event, step }) => {
-    const result = await step.run("handle-task", async () => {
-      return { processed: true, id: event.data.id };
-    });
-
-    // await step.sleep("pause", "6s");
-
-    // await step.run("create-workflow", async () => {
-    //    await prisma.workflow.create({
-    //       data: {
-    //         name: "New Workflow",
-    //       }
-    //     });
-    // })
-
-    return { message: `Task ${event.data.id} complete`, result };
-  }
-);
-
