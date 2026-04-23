@@ -1,7 +1,7 @@
 import { getQueryClient } from "@/trpc/server";
 import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
 
-export function HydrateClient(props: { children: React.ReactNode }) {
+export async function HydrateClient(props: { children: React.ReactNode }) {
   const queryClient = getQueryClient();
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>
