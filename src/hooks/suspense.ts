@@ -8,14 +8,14 @@ export type inputForId = inferInput<typeof trpc.workflow.getWorkflowById>
 export type inputForIdNodes = inferInput<typeof trpc.workflow.updateWorkflowNodes>
 
 
-export const usePrefetch = (params : input) => {
+export const usePrefetch = async (params : input) => {
     const queryClient = getQueryClient()
 
-    return queryClient.prefetchQuery(trpc.workflow.getWorkflows.queryOptions(params))
+    return await queryClient.prefetchQuery(trpc.workflow.getWorkflows.queryOptions(params))
 }
 
-export const useForIdPrefetch = (params : inputForId) => {
+export const useForIdPrefetch = async (params : inputForId) => {
     const queryClient = getQueryClient()
 
-    return queryClient.prefetchQuery(trpc.workflow.getWorkflowById.queryOptions(params))
+    return await queryClient.prefetchQuery(trpc.workflow.getWorkflowById.queryOptions(params))
 }
