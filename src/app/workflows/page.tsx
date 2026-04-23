@@ -1,12 +1,12 @@
 import { AnimatedLoader } from "@/components/loader";
 import WorkflowPage from "@/components/workflow/page";
 import { WorkflowErrorBoundary } from "@/components/workflow/error-boundary";
-import { HydrateClient } from "@/hooks/hydration";
 import { workflowLoader } from "@/hooks/params/param-loader";
-import { usePrefetch , input} from "@/hooks/suspense";
 import { RequireAuth } from "@/lib/auth-utils";
 import { SearchParams } from "nuqs/server";
 import { Suspense } from "react";
+import { getQueryClient, trpc } from "@/trpc/server";
+import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
 
 type props = {
     searchParams : Promise<SearchParams>
@@ -16,12 +16,15 @@ type props = {
 const Workflow = async ( { searchParams } : props) => {
     await RequireAuth();
 
-    const params = await workflowLoader(searchParams)
-    await usePrefetch(params);
+    const params = await workflowLoader(searchParams);
+    
+    // Get the query client and prefetch in the same component
+    const queryClient = getQueryClient();
+    await queryClient.prefetchQuery(trpc.workflow.getWorkflows.queryOptions(params));
 
     return (
         <div>
-           <HydrateClient>
+           <HydrationBoundary state={dehydrate(queryClient)}>
                 <WorkflowErrorBoundary>
                 <Suspense fallback= {
                    <div className="min-h-screen flex flex-col items-center justify-center bg-surface">
@@ -35,7 +38,7 @@ const Workflow = async ( { searchParams } : props) => {
                 <WorkflowPage></WorkflowPage>
                 </Suspense>
                 </WorkflowErrorBoundary>
-            </HydrateClient>
+            </HydrationBoundary>
         </div>
     )
 }
