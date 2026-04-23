@@ -1,8 +1,9 @@
+import NodesmithPage from "@/components/landing";
 
 const Home = async() => {
   return (
    <div>
-    Home page
+     <NodesmithPage></NodesmithPage>
    </div>
   );
 }

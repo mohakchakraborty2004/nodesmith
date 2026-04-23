@@ -47,7 +47,7 @@ export const GeminiTriggerExecutor : NodeExecutor<GeminiExecutionData> = async({
     const result = await step.run("gemini-trigger", async() => {
 
         const ai = createGoogleGenerativeAI({
-            apiKey : data.apiKey
+            apiKey : data.apiKey || process.env.GOOGLE_GENERATIVE_AI_API_KEY!
         })
 
                 const { text } = await generateText({

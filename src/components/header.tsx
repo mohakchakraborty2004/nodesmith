@@ -1,5 +1,7 @@
 //will be used later
 
+"use client"
+
 
 export default function Header() {
     return <div>

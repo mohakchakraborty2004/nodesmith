@@ -21,7 +21,7 @@ export default function GoogleTriggerDialog({
     const [copiedScript, setCopiedScript] = useState(false);
     const workflowId = params.workflowId as string;
 
-    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "https://hazel-nonevasive-uncommonly.ngrok-free.dev";
+    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
     const WebhookUrl = `${baseUrl}/api/google-form?workflowId=${workflowId}`;
 
     const scriptCode = `function onFormSubmit(e) {
