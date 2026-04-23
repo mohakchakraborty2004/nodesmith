@@ -1,5 +1,5 @@
 import { AnimatedLoader } from "@/components/loader";
-import WorkflowPage from "@/components/workflow/page";
+import { WorkflowPage } from "@/components/workflow/page";
 import { WorkflowErrorBoundary } from "@/components/workflow/error-boundary";
 import { workflowLoader } from "@/hooks/params/param-loader";
 import { RequireAuth } from "@/lib/auth-utils";
