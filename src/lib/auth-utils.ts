@@ -19,7 +19,7 @@ export const RequireAuth = async () => {
 
     if (session) {
         
-        redirect("/dashboard"); 
+        redirect("/workflows"); 
     }
     }
 
