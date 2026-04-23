@@ -3,10 +3,8 @@ import { inngest } from "@/inngest/client";
 import { pagination } from "@/lib/constants";
 import prisma from "@/lib/db";
 import { createTRPCRouter, protectedProcedure } from "@/trpc/init";
-import { Input } from "@base-ui/react";
 import { Edge, Node } from "@xyflow/react";
-import { id } from "date-fns/locale";
-import { Search } from "lucide-react";
+import { uniqueNamesGenerator, adjectives, colors, animals } from 'unique-names-generator';
 import z, { number, string } from "zod";
 
 
@@ -14,7 +12,11 @@ export const workflowRouter = createTRPCRouter({
     createWorkflow : protectedProcedure.mutation(async ({ctx}) => {
         await prisma.workflow.create({
             data : {
-                name : "lorem-ipsum",
+                name :uniqueNamesGenerator({
+                        dictionaries: [adjectives, colors, animals],
+                        separator: '-', 
+                        style: 'lowerCase', 
+                        }),
                 userId : ctx.auth.user.id,
                 nodes : {
                     create : {

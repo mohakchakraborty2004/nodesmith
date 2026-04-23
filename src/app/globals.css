@@ -5,6 +5,7 @@
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
+  /* --- Shadcn UI Core Variables --- */
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --font-sans: var(--font-sans);
@@ -46,6 +47,26 @@
   --radius-2xl: calc(var(--radius) * 1.8);
   --radius-3xl: calc(var(--radius) * 2.2);
   --radius-4xl: calc(var(--radius) * 2.6);
+
+  /* --- Nodesmith Custom Colors --- */
+  --color-tertiary-fixed-dim: #474747;
+  --color-surface-container-lowest: #ffffff;
+  --color-surface-variant: #e2e2e2;
+  --color-tertiary-fixed: #5e5e5e;
+  --color-surface-tint: #5e5e5e;
+  --color-surface-container-high: #e8e8e8;
+  --color-tertiary: #3b3b3b;
+  --color-surface-container-highest: #e2e2e2;
+  --color-surface-bright: #f9f9f9;
+  --color-on-surface-variant: #474747;
+  --color-surface-container-low: #f3f3f4;
+  --color-surface: #f9f9f9;
+  
+  /* --- Nodesmith Custom Fonts --- */
+  --font-headline: var(--font-headline);
+  --font-body: var(--font-body);
+  --font-label: var(--font-label);
+  --font-handwritten: var(--font-handwritten);
 }
 
 :root {
@@ -122,9 +143,45 @@
     @apply border-border outline-ring/50;
   }
   body {
-    @apply bg-background text-foreground;
+    /* Merges Shadcn's base logic with the custom font from Nodesmith */
+    @apply bg-background text-foreground font-body;
   }
   html {
     @apply font-sans;
   }
+}
+
+/* Landing page animations */
+@keyframes fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slide-down {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in {
+  animation: fade-in 0.8s ease-out forwards;
+}
+
+.animate-slide-down {
+  animation: slide-down 0.6s ease-out forwards;
+}
+
+.animate-fade-in-delay {
+  animation: fade-in 0.8s ease-out 0.3s forwards;
 }
