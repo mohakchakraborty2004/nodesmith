@@ -130,9 +130,10 @@ export default function HttpDialog ({
                                     <FormItem>
                                         <FormLabel>Variable</FormLabel>
                                         <FormControl>
-                                            <Input placeholder="{{httpResponse.data.id}}" {...field}></Input>
+                                            <Input placeholder="{{httpResponse.data.id}} / {{googleForm.responses[`your question`]}}" {...field}></Input>
                                         </FormControl>
                                         <FormMessage></FormMessage>
+                                        <FormDescription></FormDescription>
                                     </FormItem>
                                 )}
                             ></FormField>

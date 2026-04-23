@@ -7,7 +7,7 @@ import {Sheet,
 } from "@/components/ui/sheet"
 import { NodeType } from "@/generated/prisma/enums"
 import { useReactFlow } from "@xyflow/react";
-import { GlobeIcon, MousePointer2Icon } from "lucide-react";
+import { FormIcon, GlobeIcon, MousePointer2Icon } from "lucide-react";
 import { useCallback } from "react";
 import { toast } from "sonner";
 import {createId} from "@paralleldrive/cuid2"
@@ -26,6 +26,12 @@ const triggerNodes : NodeTypeProps[] =[
         name : "Manual Trigger",
         description : "Trigger workflows with a click manually",
         icon : MousePointer2Icon
+    } , 
+    {
+        type : NodeType.GOOGLE_FORM_TRIGGER,
+        name : "Google Form Trigger",
+        description : "Trigger workflows when a Google Form is submitted",
+        icon : FormIcon
     }
 ]
 
@@ -54,13 +60,16 @@ export function NodeSelector({
     const {setNodes , getNodes, screenToFlowPosition} = useReactFlow();
 
     const handleNode = useCallback((Node : NodeTypeProps)=> {
-        if(Node.type === NodeType.MANUAL_TRIGGER) {
+        if(Node.type === NodeType.MANUAL_TRIGGER || Node.type === NodeType.GOOGLE_FORM_TRIGGER ) {
         const hasMannualNode = getNodes().some(
             (node) => node.type === NodeType.MANUAL_TRIGGER
         )
+           const hasGooglelNode = getNodes().some(
+            (node) => node.type === NodeType.GOOGLE_FORM_TRIGGER
+        )
 
-        if(hasMannualNode) {
-            toast.error("a manual trigger node already exists")
+        if(hasMannualNode || hasGooglelNode){
+            toast.error("a manual trigger or Google form trigger node already exists")
             return;
         } 
     }
