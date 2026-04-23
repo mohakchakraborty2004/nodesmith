@@ -7,7 +7,7 @@ import {Sheet,
 } from "@/components/ui/sheet"
 import { NodeType } from "@/generated/prisma/enums"
 import { useReactFlow } from "@xyflow/react";
-import { FormIcon, GlobeIcon, MousePointer2Icon } from "lucide-react";
+import { FormIcon, GemIcon, GlobeIcon, MousePointer2Icon } from "lucide-react";
 import { useCallback } from "react";
 import { toast } from "sonner";
 import {createId} from "@paralleldrive/cuid2"
@@ -41,6 +41,12 @@ const executionNodes : NodeTypeProps[] = [
         name : "HTTP Trigger",
         description : "Trigger workflows via HTTP requests",
         icon : GlobeIcon
+    } ,
+    {
+        type : NodeType.GEMINI_TRIGGER,
+        name : "Gemini Trigger",
+        description : "Trigger workflows via Gemini models like Gemini-1.5-Pro, Gemini-1.5-Flash etc.",
+        icon : GemIcon
     }
 ]
 
