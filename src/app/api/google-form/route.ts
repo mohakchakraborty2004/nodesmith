@@ -4,7 +4,7 @@ import { NextRequest, NextResponse } from "next/server";
 
 
 
-export default async function POST(req: NextRequest) {
+export async function POST(req: NextRequest) {
     const { searchParams } = new URL(req.url);
     const workflowId = searchParams.get("workflowId");
 
