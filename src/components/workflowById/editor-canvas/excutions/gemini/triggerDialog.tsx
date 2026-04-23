@@ -33,11 +33,8 @@ import {
 import { useEffect } from "react";
 
 const AVAILABLE_MODELS = [
-    "gemini-1.5-pro",
-    "gemini-1.0-pro",
-    "gemini-1.5-flash",
-    "gemini-1.5-flash-8b",
-    "gemini-pro"
+   "gemini-2.5-flash",
+   "gemini-2.0-flash"
 ]
 
 const schema = z.object({
@@ -55,7 +52,7 @@ type Props = {
     open : boolean,
     onOpenChange : (open : boolean) => void;
     onSubmit : (values : z.infer<typeof schema>) => void;
-    defaultModel ? : "gemini-1.5-pro" | "gemini-1.0-pro" | "gemini-1.5-flash" | "gemini-1.5-flash-8b" | "gemini-pro";
+    defaultModel ? : "gemini-2.5-flash" | "gemini-2.0-flash" ;
     defaultSystemPrompt ? : string;
     defaultUserPrompt ? : string;
     defaultVariable ? : string;

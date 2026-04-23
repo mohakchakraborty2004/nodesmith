@@ -5,7 +5,7 @@ import { GemIcon, GlobeIcon } from "lucide-react";
 import GeminiDialog, { GeminiFormType } from "./triggerDialog";
 
 type NodeData = {
-    model : "gemini-1.5-pro" | "gemini-1.0-pro" | "gemini-1.5-flash" | "gemini-1.5-flash-8b" | "gemini-pro";
+    model : "gemini-2.5-flash" | "gemini-2.0-flash";
     userPrompt : string;
     systemPrompt : string;
     variable : string;

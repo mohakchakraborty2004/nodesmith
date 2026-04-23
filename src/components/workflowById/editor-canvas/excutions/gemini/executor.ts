@@ -1,17 +1,16 @@
 import { NodeExecutor } from "@/lib/types-executor-Fns"
 import { NonRetriableError } from "inngest";
-import axios, { Method } from "axios"
 import Handlebars from "handlebars"
 import { generateText } from 'ai';
 import { createGoogleGenerativeAI} from '@ai-sdk/google';
 
 type GeminiExecutionData = {
-    model : "gemini-1.5-pro" | "gemini-1.0-pro" | "gemini-1.5-flash" | "gemini-1.5-flash-8b" | "gemini-pro";
+    model : "gemini-2.5-flash" | "gemini-2.0-flash" ;
     userPrompt : string;
     systemPrompt : string;
     variable : string;
     apiKey : string;
-     [key : string] : unknown;
+    [key : string] : unknown;
 }
 
 
@@ -27,6 +26,8 @@ export const GeminiTriggerExecutor : NodeExecutor<GeminiExecutionData> = async({
     step, 
     data
 }) => {
+
+    console.log("Executing Gemini Node with data : ", data);
     // add a loading publish state 
     if(!data.model) {
         // add a failed status here later
@@ -46,7 +47,7 @@ export const GeminiTriggerExecutor : NodeExecutor<GeminiExecutionData> = async({
     const result = await step.run("gemini-trigger", async() => {
 
         const ai = createGoogleGenerativeAI({
-            apiKey : data.apiKey 
+            apiKey : data.apiKey
         })
 
                 const { text } = await generateText({
