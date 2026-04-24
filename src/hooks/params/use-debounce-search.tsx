@@ -1,3 +1,5 @@
+"use client"
+
 import { pagination } from "@/lib/constants";
 import { useEffect, useState } from "react";
 
